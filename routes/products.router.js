@@ -120,7 +120,7 @@ router.post("/", (req, res) => {
   console.log("Producto agregado:", newProduct);
 });
 
-router.put('/:pid', (req, res) => {
+router.put("/:pid", (req, res) => {
   const { pid } = req.params;
 
   const {
@@ -133,11 +133,13 @@ router.put('/:pid', (req, res) => {
     category,
     thumbnails,
   } = req.body;
-  
+
   const productIndex = products.findIndex((p) => p.id === parseInt(pid, 10));
 
   if (productIndex === -1) {
-    return res.status(404).send({ error: 'Producto no encontrado', data: null});
+    return res
+      .status(404)
+      .send({ error: "Producto no encontrado", data: null });
   }
 
   const product = products[productIndex];
@@ -152,26 +154,28 @@ router.put('/:pid', (req, res) => {
     stock: stock !== undefined ? stock : product.stock,
     category: category !== undefined ? category : product.category,
     thumbnails: thumbnails !== undefined ? thumbnails : product.thumbnails,
-  }
+  };
 
   products[productIndex] = updatedProduct;
 
-  res.status(200).send({error: null, data: updatedProduct});
+  res.status(200).send({ error: null, data: updatedProduct });
   console.log("Producto actualizado:", updatedProduct);
 });
 
-router.delete('pid', (req, res) => {
+router.delete("/:pid", (req, res) => {
   const { pid } = req.params;
 
   const productIndex = products.findIndex((p) => p.id === parseInt(pid, 10));
 
   if (productIndex === -1) {
-    return res.status(404).send({error: "Producto no encontrado", data: null});
+    return res
+      .status(404)
+      .send({ error: "Producto no encontrado", data: null });
   }
 
   const deletedProduct = products.splice(productIndex, 1);
 
-  res.status(200).send({error: null, data: deletedProduct});
+  res.status(200).send({ error: null, data: deletedProduct });
   console.log("Producto eliminado:", deletedProduct);
 });
 

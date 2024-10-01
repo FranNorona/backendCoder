@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/products", productRouter);
-app.use("/api/cart", cartRouter);
+app.use("/api/carts", cartRouter);
 
 app.listen(config.PORT, () => {
   console.log(`Server activo en puerto ${config.PORT}`);
