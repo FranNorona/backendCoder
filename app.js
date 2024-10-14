@@ -3,7 +3,7 @@ import http from "http";
 import config from "./config.js";
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
-import initSocket from "./sockets.js"; // Importa la función para inicializar WebSockets
+import initSocket from "./sockets.js";
 import { create } from "express-handlebars";
 import { getAllProducts } from "./services/products.services.js";
 
