@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
     !isNaN(limit) && limit > 0 ? products.slice(0, limit) : products;
 
   res.status(200).send({ error: null, data: result });
-  console.log("Get realizado");
 });
 
 router.get("/:pid", (req, res) => {
@@ -64,9 +63,10 @@ router.post("/", (req, res) => {
     category,
     thumbnails,
   };
+
   const createdProduct = addProduct(newProduct);
+  req.app.get("socketio").emit("productosActualizados", getAllProducts());
   res.status(201).send({ error: null, data: createdProduct });
-  console.log("Producto agregado:", createdProduct);
 });
 
 router.put("/:pid", (req, res) => {
@@ -76,7 +76,6 @@ router.put("/:pid", (req, res) => {
   const updatedProduct = updateProduct(parseInt(pid, 10), updatedData);
   if (updatedProduct) {
     res.status(200).send({ error: null, data: updatedProduct });
-    console.log("Producto actualizado:", updatedProduct);
   } else {
     res.status(404).send({ error: "Producto no encontrado", data: null });
   }
@@ -87,11 +86,12 @@ router.delete("/:pid", (req, res) => {
 
   const deletedProduct = deleteProduct(parseInt(pid, 10));
   if (deletedProduct) {
+    req.app.get("socketio").emit("productosActualizados", getAllProducts());
     res.status(200).send({ error: null, data: deletedProduct });
-    console.log("Producto eliminado:", deletedProduct);
   } else {
     res.status(404).send({ error: "Producto no encontrado", data: null });
   }
 });
 
 export default router;
+

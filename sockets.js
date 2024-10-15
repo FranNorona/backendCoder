@@ -7,17 +7,20 @@ const initSocket = (httpServer, products) => {
   io.on("connection", (client) => {
     console.log(`Cliente conectado, id: ${client.id}`);
 
-    client.emit("mensaje", products);
+    // Emitimos los productos actuales al cliente al conectarse
+    client.emit("productosActualizados", products);
 
     client.on("nuevoProducto", (producto) => {
       products.push(producto);
-      io.emit("mensaje", products);
+      io.emit("productosActualizados", products);
     });
 
     client.on("disconnect", () => {
       console.log(`Cliente desconectado, id: ${client.id}`);
     });
   });
+
+  return io;
 };
 
 export default initSocket;

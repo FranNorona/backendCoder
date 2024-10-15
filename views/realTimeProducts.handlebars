@@ -18,7 +18,7 @@
           <th>Categoría</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="product-list">
         {{#each products}}
           <tr>
             <td>{{this.id}}</td>
@@ -32,5 +32,31 @@
         {{/each}}
       </tbody>
     </table>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      socket.on("productosActualizados", (productos) => {
+        const productContainer = document.getElementById("product-list");
+        productContainer.innerHTML = '';
+
+        productos.forEach((producto) => {
+          const row = document.createElement("tr");
+
+          row.innerHTML = `
+            <td>${producto.id}</td>
+            <td>${producto.title}</td>
+            <td>${producto.description}</td>
+            <td>${producto.code}</td>
+            <td>${producto.price}</td>
+            <td>${producto.stock}</td>
+            <td>${producto.category}</td>
+          `;
+
+          productContainer.appendChild(row);
+        });
+      });
+    </script>
   </body>
 </html>

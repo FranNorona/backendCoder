@@ -13,8 +13,8 @@ const server = http.createServer(app);
 app.use(express.json());
 
 const products = getAllProducts();
-
-initSocket(server, products);
+const io = initSocket(server, products);
+app.set("socketio", io);
 
 const handlebars = create({
   extname: ".handlebars",
@@ -31,17 +31,14 @@ app.use("/api/carts", cartRouter);
 app.use("/static", express.static(`${config.DIRNAME}/public`));
 
 app.get("/", (req, res) => {
-  const products = getAllProducts();
   res.render("home", { title: "Lista de Productos", products });
 });
 
 app.get("/home", (req, res) => {
-  const products = getAllProducts();
   res.render("home", { title: "Lista de Productos", products });
 });
 
 app.get("/realtimeproducts", (req, res) => {
-  const products = getAllProducts();
   res.render("realTimeProducts", {
     title: "Productos en Tiempo Real",
     products,
