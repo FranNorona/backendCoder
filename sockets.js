@@ -7,7 +7,6 @@ const initSocket = (httpServer, products) => {
   io.on("connection", (client) => {
     console.log(`Cliente conectado, id: ${client.id}`);
 
-    // Emitimos los productos actuales al cliente al conectarse
     client.emit("productosActualizados", products);
 
     client.on("nuevoProducto", (producto) => {

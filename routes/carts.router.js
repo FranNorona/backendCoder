@@ -37,7 +37,7 @@ router.post("/", (req, res) => {
 
 router.post("/:cid/products/:pid", (req, res) => {
   const { cid, pid } = req.params;
-  const { quantity } = req.body; // Asegúrate de que la cantidad venga del cuerpo
+  const { quantity } = req.body;
 
   if (!quantity || quantity <= 0) {
     return res.status(400).send({ error: "Cantidad no válida", data: null });
