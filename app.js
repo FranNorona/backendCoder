@@ -18,14 +18,17 @@ mongoose
   .then(() => console.log("Conectado a MongoDB"))
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
-const products = getAllProducts();
-const io = initSocket(server, products);
+const io = initSocket(server);
 app.set("socketio", io);
 
 const handlebars = create({
   extname: ".handlebars",
   layoutsDir: "./views/layouts",
   defaultLayout: "main",
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
 });
 
 app.engine(".handlebars", handlebars.engine);
@@ -36,19 +39,40 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/static", express.static(`${config.DIRNAME}/public`));
 
-app.get("/", (req, res) => {
-  res.render("home", { title: "Lista de Productos", products });
+app.get("/", async (req, res) => {
+  try {
+    const products = await getAllProducts();
+    res.render("home", {
+      title: "Lista de Productos",
+      products: products.docs,
+    }); // Pasar productos como docs
+  } catch (error) {
+    res.status(500).send({ error: "Error al obtener productos" });
+  }
 });
 
-app.get("/home", (req, res) => {
-  res.render("home", { title: "Lista de Productos", products });
+app.get("/home", async (req, res) => {
+  try {
+    const products = await getAllProducts();
+    res.render("home", {
+      title: "Lista de Productos",
+      products: products.docs,
+    }); // Pasar productos como docs
+  } catch (error) {
+    res.status(500).send({ error: "Error al obtener productos" });
+  }
 });
 
-app.get("/realtimeproducts", (req, res) => {
-  res.render("realTimeProducts", {
-    title: "Productos en Tiempo Real",
-    products,
-  });
+app.get("/realtimeproducts", async (req, res) => {
+  try {
+    const products = await getAllProducts();
+    res.render("realTimeProducts", {
+      title: "Productos en Tiempo Real",
+      products: products.docs, // Pasar productos como docs
+    });
+  } catch (error) {
+    res.status(500).send({ error: "Error al obtener productos" });
+  }
 });
 
 server.listen(config.PORT, () => {

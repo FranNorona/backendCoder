@@ -3,13 +3,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{title}}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <h1>{{title}}</h1>
-    <ul>
-      {{#each products}}
-        <li>{{this.title}} - {{this.price}}</li>
-      {{/each}}
-    </ul>
+    <div class="container">
+      <h1>{{title}}</h1>
+      <div class="products">
+        {{#each products}}
+          <div class="product">
+            <h2>{{this.title}}</h2>
+            <p>{{this.description}}</p>
+            <p>Precio: ${{this.price}}</p>
+            <p>Categoría: {{this.category}}</p>
+            <p>Stock: {{this.stock}}</p>
+            <a href="/products/{{this._id}}">Ver detalles</a>
+            <button onclick="agregarAlCarrito('{{this._id}}')">Agregar al
+              carrito</button>
+          </div>
+        {{/each}}
+      </div>
+      <div class="pagination">
+        {{#if hasPrevPage}}
+          <a href="?page={{prevPage}}">Anterior</a>
+        {{/if}}
+        <span>Página {{page}} de {{totalPages}}</span>
+        {{#if hasNextPage}}
+          <a href="?page={{nextPage}}">Siguiente</a>
+        {{/if}}
+      </div>
+    </div>
+    <script>
+      function agregarAlCarrito(productId) {
+      fetch(`/api/carts/1/products/${productId}`, { method: 'POST', headers: {
+      'Content-Type': 'application/json' }, body: JSON.stringify({ quantity: 1
+      }) }) .then(response => response.json()) .then(data => { if (data.error) {
+      alert('Error al agregar el producto al carrito: ' + data.error); } else {
+      alert('Producto agregado al carrito'); } }); }
+    </script>
   </body>
 </html>

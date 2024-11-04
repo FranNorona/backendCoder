@@ -3,6 +3,7 @@ import productModel from "../dao/models/product.model.js";
 export const getAllProducts = async (query = {}, options = {}) => {
   try {
     const result = await productModel.paginate(query, options);
+    console.log("Resultado de getAllProducts:", result);
     return result;
   } catch (error) {
     throw new Error("Error al obtener productos: " + error.message);
