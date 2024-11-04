@@ -4,6 +4,7 @@ import config from "./config.js";
 import productRouter from "./routes/products.router.js";
 import cartRouter from "./routes/carts.router.js";
 import initSocket from "./sockets.js";
+import mongoose from "mongoose";
 import { create } from "express-handlebars";
 import { getAllProducts } from "./services/products.services.js";
 
@@ -11,6 +12,11 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(express.json());
+
+mongoose
+  .connect(config.MONGODB_URI_LOCAL, {})
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch((err) => console.error("Error al conectar a MongoDB:", err));
 
 const products = getAllProducts();
 const io = initSocket(server, products);
