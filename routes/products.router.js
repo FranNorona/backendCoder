@@ -42,11 +42,15 @@ router.get("/", async (req, res) => {
 router.get("/:pid", async (req, res) => {
   const { pid } = req.params;
   try {
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).send({ error: "ID de producto no válido" });
+    }
+
     const product = await productModel.findById(pid);
     if (!product) {
       return res.status(404).send({ error: "Producto no encontrado" });
     }
-    res.render("productDetails", { product });
+    res.json({ product });
   } catch (error) {
     res.status(500).send({ status: "error", error: error.message });
   }
