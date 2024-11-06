@@ -45,7 +45,7 @@ app.get("/", async (req, res) => {
     res.render("home", {
       title: "Lista de Productos",
       products: products.docs,
-    }); // Pasar productos como docs
+    });
   } catch (error) {
     res.status(500).send({ error: "Error al obtener productos" });
   }
@@ -57,7 +57,7 @@ app.get("/home", async (req, res) => {
     res.render("home", {
       title: "Lista de Productos",
       products: products.docs,
-    }); // Pasar productos como docs
+    });
   } catch (error) {
     res.status(500).send({ error: "Error al obtener productos" });
   }
@@ -68,7 +68,7 @@ app.get("/realtimeproducts", async (req, res) => {
     const products = await getAllProducts();
     res.render("realTimeProducts", {
       title: "Productos en Tiempo Real",
-      products: products.docs, // Pasar productos como docs
+      products: products.docs,
     });
   } catch (error) {
     res.status(500).send({ error: "Error al obtener productos" });

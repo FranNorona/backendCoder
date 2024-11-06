@@ -106,7 +106,7 @@ router.delete("/:cid", async (req, res) => {
         .send({ error: "Carrito no encontrado", data: null });
     }
 
-    cart.products = []; // Vacía el array de productos
+    cart.products = [];
     await cart.save();
 
     res.status(200).send({ status: "success", data: cart });
