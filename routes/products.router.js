@@ -33,7 +33,22 @@ router.get("/", async (req, res) => {
   };
   try {
     const result = await getAllProducts(query, options);
-    res.json(result);
+    const totalPages = result.totalPages;
+    const prevPage = page > 1 ? page - 1 : null;
+    const nextPage = page < totalPages ? page + 1 : null;
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
+    res.json({
+      status: "success",
+      payload: result.docs,
+      totalPages: totalPages,
+      prevPage: prevPage,
+      nextPage: nextPage,
+      page: page,
+      hasPrevPage: prevPage !== null,
+      hasNextPage: nextPage !== null,
+      prevLink: prevPage ? `${baseUrl}?page=${prevPage}` : null,
+      nextLink: nextPage ? `${baseUrl}?page=${nextPage}` : null,
+    });
   } catch (error) {
     res.status(500).send({ status: "error", error: error.message });
   }

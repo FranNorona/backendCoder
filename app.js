@@ -40,26 +40,94 @@ app.use("/api/carts", cartRouter);
 app.use("/static", express.static(`${config.DIRNAME}/public`));
 
 app.get("/", async (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const page = parseInt(req.query.page, 10) || 1;
+  const sort = req.query.sort || "";
+  const category = req.query.category || "";
+  const availability = req.query.status;
+  const query = {};
+  if (req.query.query) {
+    query.title = { $regex: req.query.query, $options: "i" };
+  }
+  if (category) {
+    query.category = category;
+  }
+  if (availability !== undefined) {
+    query.status = availability === "true";
+  }
+  const options = {
+    limit,
+    page,
+    sort: sort ? { price: sort === "asc" ? 1 : -1 } : {},
+  };
+
   try {
-    const products = await getAllProducts();
+    const result = await getAllProducts(query, options);
+    const totalPages = result.totalPages;
+    const prevPage = page > 1 ? page - 1 : null;
+    const nextPage = page < totalPages ? page + 1 : null;
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
+
     res.render("home", {
       title: "Lista de Productos",
-      products: products.docs,
+      products: result.docs,
+      totalPages: totalPages,
+      prevPage: prevPage,
+      nextPage: nextPage,
+      page: page,
+      hasPrevPage: prevPage !== null,
+      hasNextPage: nextPage !== null,
+      prevLink: prevPage ? `${baseUrl}/home?page=${prevPage}` : null,
+      nextLink: nextPage ? `${baseUrl}/home?page=${nextPage}` : null,
     });
   } catch (error) {
-    res.status(500).send({ error: "Error al obtener productos" });
+    res.status(500).send({ status: "error", error: error.message });
   }
 });
 
 app.get("/home", async (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 10;
+  const page = parseInt(req.query.page, 10) || 1;
+  const sort = req.query.sort || "";
+  const category = req.query.category || "";
+  const availability = req.query.status;
+  const query = {};
+  if (req.query.query) {
+    query.title = { $regex: req.query.query, $options: "i" };
+  }
+  if (category) {
+    query.category = category;
+  }
+  if (availability !== undefined) {
+    query.status = availability === "true";
+  }
+  const options = {
+    limit,
+    page,
+    sort: sort ? { price: sort === "asc" ? 1 : -1 } : {},
+  };
+
   try {
-    const products = await getAllProducts();
+    const result = await getAllProducts(query, options);
+    const totalPages = result.totalPages;
+    const prevPage = page > 1 ? page - 1 : null;
+    const nextPage = page < totalPages ? page + 1 : null;
+    const baseUrl = `${req.protocol}://${req.get("host")}${req.baseUrl}`;
+
     res.render("home", {
       title: "Lista de Productos",
-      products: products.docs,
+      products: result.docs,
+      totalPages: totalPages,
+      prevPage: prevPage,
+      nextPage: nextPage,
+      page: page,
+      hasPrevPage: prevPage !== null,
+      hasNextPage: nextPage !== null,
+      prevLink: prevPage ? `${baseUrl}/home?page=${prevPage}` : null,
+      nextLink: nextPage ? `${baseUrl}/home?page=${nextPage}` : null,
     });
   } catch (error) {
-    res.status(500).send({ error: "Error al obtener productos" });
+    res.status(500).send({ status: "error", error: error.message });
   }
 });
 
