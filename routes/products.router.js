@@ -121,14 +121,37 @@ router.post("/", async (req, res) => {
 
 router.put("/:pid", async (req, res) => {
   const { pid } = req.params;
-  const updatedData = req.body;
+  const { code, ...updatedData } = req.body;
 
   try {
-    const updatedProduct = await updateProduct(pid, updatedData);
-    res.status(200).send({ error: null, data: updatedProduct });
+    if (code) {
+      const existingProduct = await productModel.findOne({ code });
+      if (existingProduct && existingProduct._id.toString() !== pid) {
+        return res.status(400).json({
+          status: "error",
+          error: `El código ${code} ya está en uso por otro producto.`,
+          data: null,
+        });
+      }
+      updatedData.code = code;
+    }
+
+    const updatedProduct = await productModel.findByIdAndUpdate(
+      pid,
+      updatedData,
+      { new: true }
+    );
+    if (!updatedProduct) {
+      return res.status(404).json({
+        status: "error",
+        error: "Producto no encontrado",
+        data: null,
+      });
+    }
+    res.status(200).json({ status: "success", payload: updatedProduct });
     console.log("Producto actualizado:", updatedProduct);
   } catch (error) {
-    res.status(404).send({ error: error.message, data: null });
+    res.status(500).json({ status: "error", error: error.message, data: null });
   }
 });
 
