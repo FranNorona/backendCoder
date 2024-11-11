@@ -1,0 +1,38 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <h1>{{title}}</h1>
+    <div class="cart">
+      {{#if cart.products.length}}
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each cart.products}}
+              <tr>
+                <td>{{this.productId.title}}</td>
+                <td>{{this.productId.description}}</td>
+                <td>${{this.productId.price}}</td>
+                <td>{{this.quantity}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      {{else}}
+        <p>El carrito está vacío.</p>
+      {{/if}}
+    </div>
+    <a href="/home">Volver a la lista de productos</a>
+  </body>
+</html>

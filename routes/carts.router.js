@@ -1,23 +1,23 @@
 import { Router } from "express";
 import mongoose from "mongoose";
 import cartModel from "../dao/models/cart.model.js";
+import productModel from "../dao/models/product.model.js";
 
 const router = Router();
 
 router.get("/:cid", async (req, res) => {
   const { cid } = req.params;
-
   try {
     const cart = await cartModel
-      .findOne({ cartId: parseInt(cid, 10) })
-      .populate("products.productId");
+      .findById(cid)
+      .populate("products.productId")
+      .lean();
     if (!cart) {
       return res
         .status(404)
-        .send({ error: "Carrito no encontrado", data: null });
+        .send({ status: "error", error: "Carrito no encontrado" });
     }
-    res.status(200).send({ error: null, data: cart });
-    console.log("Carrito devuelto con productos completos:", cart);
+    res.render("cartDetails", { title: "Detalles del Carrito", cart });
   } catch (error) {
     res.status(500).send({ status: "error", error: error.message });
   }
